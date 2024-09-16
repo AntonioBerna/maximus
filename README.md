@@ -8,7 +8,7 @@
 |_|  |_|asterful  /_/   \_\lphabet  e/_/\_\pression  |___|n  |_|  |_|ajestic   \___/ppercase  |____/tyles
 ```
 
-## why maximus?
+## Why maximus?
 
 I decided to create this tool to use the very famous `figlet` (for more informations click [here](https://github.com/cmatsuoka/figlet)) tool in a customized way.
 

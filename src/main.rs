@@ -1,30 +1,44 @@
 use figlet_rs::FIGfont;
 use std::env;
 
-fn convert_to_figlet(text: &str) -> String {
-    let standard_font: FIGfont = FIGfont::standard().unwrap();
-    let mut lines: Vec<String> = vec!["".to_string(); standard_font.convert("A").unwrap().to_string().lines().count()];
+struct FigletConverter {
+    font: FIGfont,
+}
 
-    for char in text.chars() {
-        if char.is_uppercase() {
-            let rendered_char: String = standard_font.convert(&char.to_string()).unwrap().to_string();
-            for (i, line) in rendered_char.lines().enumerate() {
-                if i < lines.len() {
-                    lines[i].push_str(line);
-                }
-            }
-        } else {
-            for i in 0..lines.len() {
-                if i == lines.len() - 2 {
-                    lines[i].push(char);
-                } else {
-                    lines[i].push(' ');
-                }
-            }
+impl FigletConverter {
+    fn new() -> Result<Self, &'static str> {
+        match FIGfont::standard() {
+            Ok(font) => Ok(FigletConverter { font }),
+            Err(_) => Err("Failed to load standard FIGlet font"),
         }
     }
 
-    lines.join("\n")
+    fn convert(&self, text: &str) -> String {
+        let mut lines: Vec<String> = vec![
+            String::new();
+            self.font.convert("A").unwrap().to_string().lines().count()
+        ];
+
+        for ch in text.chars() {
+            if ch.is_uppercase() {
+                if let Some(rendered_char) = self.font.convert(&ch.to_string()) {
+                    for (i, line) in rendered_char.to_string().lines().enumerate() {
+                        lines[i].push_str(line);
+                    }
+                }
+            } else {
+                for i in 0..lines.len() {
+                    if i == lines.len() - 2 {
+                        lines[i].push(ch);
+                    } else {
+                        lines[i].push(' ');
+                    }
+                }
+            }
+        }
+
+        lines.join("\n")
+    }
 }
 
 fn main() {
@@ -34,7 +48,9 @@ fn main() {
         std::process::exit(1);
     }
 
+    let converter: FigletConverter = FigletConverter::new().expect("Failed to create FIGlet converter");
     let text: &String = &args[1];
-    let converted_text: String = convert_to_figlet(text);
+    let converted_text: String = converter.convert(text);
+    
     println!("{}", converted_text);
 }

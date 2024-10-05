@@ -1,5 +1,5 @@
-use figlet_rs::FIGfont;
 use std::env;
+use figlet_rs::FIGfont;
 
 struct FigletConverter {
     font: FIGfont,
@@ -49,8 +49,7 @@ fn main() {
     }
 
     let converter: FigletConverter = FigletConverter::new().expect("Failed to create FIGlet converter");
-    let text: &String = &args[1];
-    let converted_text: String = converter.convert(text);
+    let converted_text: String = converter.convert(&args[1]);
     
     println!("{}", converted_text);
 }
